@@ -2,9 +2,9 @@
 #include <MFRC522.h> // библиотека "RFID".
 #define SS_PIN 10
 #define RST_PIN 9
-#define relay 5
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 unsigned long uidDec, uidDecTemp;  // для храниения номера метки в десятичном формате
+int relay = 5;
 void setup() {
   Serial.begin(9600);
   Serial.println("Waiting for card...");
@@ -21,8 +21,10 @@ void loop() {
   }
   // Выбор метки
   if ( ! mfrc522.PICC_ReadCardSerial()) {
+    digitalWrite(relay, HIGH);
     return;
   }
+  
   uidDec = 0;
   // Выдача серийного номера метки.
   for (byte i = 0; i < mfrc522.uid.size; i++)
@@ -32,10 +34,4 @@ void loop() {
   }
   Serial.println("Card UID: ");
   Serial.println(uidDec); // Выводим UID метки в консоль.
-  if (uidDec == 3763966293) // Сравниваем Uid метки, если он равен заданому то серва открывает.
-  {
-    digitalWrite(relay, HIGH);
-    delay(3000); // пауза 3 сек и механизм запирается.
-    digitalWrite(relay, LOW);
-  }
 }
