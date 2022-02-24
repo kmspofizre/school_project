@@ -5,6 +5,7 @@
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 unsigned long uidDec, uidDecTemp;  // для храниения номера метки в десятичном формате
 int relay = 5;
+bool f = false;
 void setup() {
   Serial.begin(9600);
   Serial.println("Waiting for card...");
@@ -34,4 +35,13 @@ void loop() {
   }
   Serial.println("Card UID: ");
   Serial.println(uidDec); // Выводим UID метки в консоль.
+  if ((uidDec == 1199345248) and (not f)){
+    Serial.println("Podoshlo");
+    f = true;
+    digitalWrite(relay, LOW);
+    delay(5000);
+    f = false;
+  }
+  if (not f)
+    digitalWrite(relay, HIGH);
 }
