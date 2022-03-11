@@ -8,11 +8,10 @@ int relay = 5;
 bool f = false;
 void setup() {
   Serial.begin(9600);
-  Serial.println("Waiting for card...");
   SPI.begin();  //  инициализация SPI / Init SPI bus.
   mfrc522.PCD_Init();     // инициализация MFRC522 / Init MFRC522 card.
   pinMode(relay, OUTPUT);
-  digitalWrite(relay, LOW);
+  digitalWrite(relay, HIGH);
 }
 void loop() {
   // Поиск новой метки
@@ -22,7 +21,7 @@ void loop() {
   }
   // Выбор метки
   if ( ! mfrc522.PICC_ReadCardSerial()) {
-    digitalWrite(relay, HIGH);
+    digitalWrite(relay, HIGH);  // --- OFF ---
     return;
   }
   
@@ -38,10 +37,10 @@ void loop() {
   if ((uidDec == 1199345248) and (not f)){
     Serial.println("Podoshlo");
     f = true;
-    digitalWrite(relay, LOW);
+    digitalWrite(relay, LOW);  // --- ON ---
     delay(5000);
     f = false;
   }
   if (not f)
-    digitalWrite(relay, HIGH);
+    digitalWrite(relay, HIGH);  // --- OFF ---
 }
